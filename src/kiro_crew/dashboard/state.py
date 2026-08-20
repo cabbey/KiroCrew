@@ -3617,6 +3617,8 @@ class DashboardState:
         update_check_status: str = "unchecked",
         update_command: str = "",
         update_channel: str = "",
+        update_last_checked_at: float | None = None,
+        update_check_interval_secs: int = 43200,
     ) -> dict[str, Any]:
         """Core status fields shared by /api/status, SSE, and WebSocket pushes."""
         uptime = int(time.time() - self.start_time)
@@ -3658,6 +3660,8 @@ class DashboardState:
             # between switching channels and the new lane's build landing, so the
             # switcher must key on this one or it would snap back on every poll.
             "update_channel": update_channel,
+            "update_last_checked_at": update_last_checked_at,
+            "update_check_interval_secs": update_check_interval_secs,
             "no_crons": self.no_crons,
             "branch": branch,
             "commit": commit,
