@@ -11,6 +11,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import tempfile
 import textwrap
 import urllib.error
 import urllib.request
@@ -28,11 +29,8 @@ from kiro_crew.config import KiroCrewConfig
 from kiro_crew.config.loader import config_dir
 from kiro_crew.config.paths import (
     LEGACY_CONFIG_DIR_NAME,
-    MIGRATION_MARKER_NAME,
     _valid_override_home,
-    detect_data_home_conflict,
     kiro_agents_dir,
-    preserved_entries,
 )
 from kiro_crew.constants import MIN_NODE_MAJOR
 from kiro_crew.dashboard.crash_dump_store import (
@@ -427,84 +425,69 @@ def _doctor_mcp_governance(agent_path: Path, issues: list[str]) -> None:
     print(f"      Then have your admin allow-list, by these exact names: {names}")
 
 
-def _doctor_data_home() -> None:
-    """Report the data home and any leftover pre-move legacy home.
+# Top-level entries that hold a Python virtual environment rather than user
+# data. An older wheel install could nest its managed venv INSIDE the legacy
+# ``~/.kirocrew`` home, so a leftover legacy dir may still contain the running
+# interpreter — deleting it would break the live install.
+_LEGACY_VENV_DIR_NAMES = ("venv", ".venv", "venvs")
 
-    The one-time ``~/.kirocrew`` -> ``~/.kiro/crew`` migration force-copies the
-    old home into the new one (overwriting anything already there), writes a
-    completion marker, and then deletes ``~/.kirocrew``'s DATA — there is no
-    rollback copy. A leftover ``~/.kirocrew`` here is rendered as one of several
-    states: a **conflict** (marker present + non-preserved leftovers → resurrection
-    debris that is never used and needs manual cleanup), **IGNORED** (a valid
-    ``KIROCREW_HOME`` override is active, so migration is disabled), a **retained
-    venv** (marker present + only a preserved virtual environment → expected, and
-    explicitly NOT safe to delete, since it is the live interpreter), **UNUSED**
-    (marker present + empty legacy → migration already completed, harmless
-    leftover), or a genuine **pending** migration (no marker yet → it retries on
-    the next cold start). Purely informational — doctor never deletes it itself.
+
+def _legacy_venv_entries(home: Path) -> list[str]:
+    """Names of virtual-environment entries at the top of *home* (best-effort)."""
+    try:
+        return sorted(name for name in _LEGACY_VENV_DIR_NAMES if (home / name).is_dir())
+    except OSError:  # pragma: no cover - defensive
+        return []
+
+
+def _doctor_data_home() -> None:
+    """Report the data home and any leftover top-level ``~/.kirocrew`` directory.
+
+    The data root is ``~/.kiro/crew`` (or a valid ``KIROCREW_HOME`` override). A
+    leftover top-level ``~/.kirocrew`` is not the data home unless an override
+    points at it; a leftover that still holds a virtual environment is flagged as
+    UNSAFE to delete (it may be the live interpreter), otherwise it is reported as
+    an unused directory. Purely informational — doctor never deletes it itself.
     """
     print("\nData Home")
     home = config_dir()
     print(f"  location:    ✅ {home}")
 
-    conflict = detect_data_home_conflict()
     legacy = Path.home() / LEGACY_CONFIG_DIR_NAME
-    if conflict:
-        # marker present + non-empty legacy → the legacy is debris, NOT a
-        # pending migration; it is never used and needs manual cleanup.
-        print(f"  ⚠ conflict:  {legacy} exists but is NOT used (migration already completed).")
-        print(f"               {conflict}")
-    elif legacy.is_dir():
-        override_home = _valid_override_home()
-        if override_home is not None:
-            try:
-                points_at_legacy = override_home == legacy.resolve()
-            except OSError:  # pragma: no cover - defensive
-                points_at_legacy = override_home == legacy
-            if points_at_legacy:
-                # The override points AT the legacy dir, so legacy IS the active
-                # data home — not ignored debris (don't mislabel the home the
-                # process is actually using).
-                print(
-                    f"  legacy:      ✅ {legacy} is the ACTIVE data home "
-                    f"(KIROCREW_HOME override points to it)"
-                )
-            else:
-                # A valid KIROCREW_HOME override elsewhere bypasses migration on
-                # every start, so this legacy dir will NOT be migrated — don't
-                # imply a retry.
-                print(
-                    f"  legacy:      ⏹ {legacy} present but IGNORED "
-                    f"(KIROCREW_HOME override active — migration disabled until it is unset)"
-                )
-        elif (home / MIGRATION_MARKER_NAME).exists():
-            # Marker present + a legacy dir that detect_data_home_conflict did not
-            # flag. Either it is empty leftover, or it survives ONLY to hold a
-            # preserved virtual environment — which must NOT be described as safe
-            # to delete, since that is the user's live interpreter.
-            preserved = preserved_entries(legacy)
-            if preserved:
-                print(
-                    f"  legacy:      ✅ {legacy} retained to hold the KiroCrew "
-                    f"virtual environment ({', '.join(preserved)})"
-                )
-                print(
-                    f"               Data was migrated to {home}; the venv stays "
-                    f"here because moving it would break the interpreter."
-                )
-                print(
-                    "               Do NOT delete it while it is your active "
-                    "install (`which kirocrew` resolves through it)."
-                )
-            else:
-                print(
-                    f"  legacy:      ⏹ {legacy} present but UNUSED "
-                    f"(migration already completed; empty leftover, safe to delete)"
-                )
-        else:
+    if not legacy.is_dir():
+        return
+    override_home = _valid_override_home()
+    if override_home is not None:
+        try:
+            points_at_legacy = override_home == legacy.resolve()
+        except OSError:  # pragma: no cover - defensive
+            points_at_legacy = override_home == legacy
+        if points_at_legacy:
+            # The override points AT the legacy dir, so it IS the active data
+            # home — don't mislabel the home the process is actually using.
             print(
-                f"  legacy:      ⏹ {legacy} still present (migration will retry on next cold start)"
+                f"  legacy:      ✅ {legacy} is the ACTIVE data home "
+                f"(KIROCREW_HOME override points to it)"
             )
+            return
+    venvs = _legacy_venv_entries(legacy)
+    if venvs:
+        # A wheel install could nest its managed venv here; the dir survives to
+        # hold it. Never advise deleting it — removing it takes the running
+        # interpreter with it (`which kirocrew` may resolve through it).
+        print(
+            f"  legacy:      ✅ {legacy} retained to hold a Kiro Crew "
+            f"virtual environment ({', '.join(venvs)})"
+        )
+        print(
+            "               Do NOT delete it while it is your active install "
+            "— removing it would delete the running interpreter."
+        )
+        return
+    print(
+        f"  legacy:      ⏹ {legacy} present but not the data home — safe to "
+        f"delete once you have confirmed it holds nothing you need"
+    )
 
 
 def _doctor_path_launcher() -> None:
@@ -1099,6 +1082,114 @@ def _doctor_memory_pressure(issues: list[str]) -> None:
     print("               Fix: add swap, enable systemd-oomd, or install earlyoom.")
 
 
+# ── kiro-cli installer residue ────────────────────────────────────────────────
+# kiro-cli runs its auto-update check on STARTUP — the ``app.disableAutoupdates``
+# setting is documented as "Disable automatic updates on startup" — and Crew
+# spawns a FRESH kiro-cli per session (``AcpRuntime`` is constructed per session
+# in ``providers/acp.py`` and ``session.py``, and again per Code Review Sage
+# worker). So that check runs once per process START, not once per host per
+# release.
+#
+# On Windows the running executable cannot be replaced, so the downloaded
+# installer can never be applied while a Crew ACP child holds the binary — and
+# the "update pending" state is not cleared after an upgrade either
+# (kirodotdev/Kiro#9825). Nothing in that loop is self-limiting: one installer is
+# left behind per process start. A reporting user cleared ~80 GB of them.
+#
+# Crew cannot fix the updater, and must NOT disable updates on the user's behalf:
+# ``app.disableAutoupdates`` is a per-user setting shared with their own
+# interactive CLI, so setting it silently would suppress their security updates.
+# What Crew can do is stop the residue being invisible, since it is Crew's
+# per-session spawning that turns a stale flag into tens of gigabytes.
+# Upstream fix requested in kirodotdev/Kiro#10970.
+_CLI_INSTALLER_GLOB = "kiro-installer*"
+
+# One file can be a download still in flight; two or more is residue, because a
+# failed apply leaves the file behind and the next process start fetches another.
+_CLI_INSTALLER_RESIDUE_MIN = 2
+
+# The temp dir is shared with every other process on the host and can hold a very
+# large number of entries, so a diagnostic must not walk it unbounded.
+# Non-recursive by design: the installer lands at the top level.
+_CLI_INSTALLER_SCAN_CAP = 512
+
+
+def _scan_cli_installer_residue(temp_dir: Path) -> tuple[int, int]:
+    """Return ``(count, total_bytes)`` for leftover kiro-cli installers in *temp_dir*.
+
+    Bounded and non-raising: the scan stops at :data:`_CLI_INSTALLER_SCAN_CAP`
+    matches, and an entry that vanishes mid-scan — another process cleaning up,
+    or the updater itself — is skipped rather than aborting the whole doctor run.
+    An unreadable temp dir reports "nothing found" for the same reason.
+    """
+    count = 0
+    total = 0
+    try:
+        for entry in temp_dir.glob(_CLI_INSTALLER_GLOB):
+            try:
+                if not entry.is_file():
+                    continue
+                total += entry.stat().st_size
+            except OSError:
+                # Raced with a delete, or unreadable: one bad entry must not
+                # abort a diagnostic.
+                continue
+            count += 1
+            if count >= _CLI_INSTALLER_SCAN_CAP:
+                break
+    except OSError:
+        return (0, 0)
+    return (count, total)
+
+
+def _doctor_cli_installer_residue(issues: list[str]) -> None:
+    """Report leftover kiro-cli auto-update installers piling up in the temp dir.
+
+    Silent on a healthy host — the common case, and every case on a platform that
+    can replace a running binary — so a normal doctor run gains no noise. This
+    speaks only when residue is actually present, which is why it is not gated on
+    ``platform.system() == "Windows"``: the gate is the evidence on disk, so the
+    check still fires if this failure mode ever appears on another platform.
+    """
+    # gettempdir() itself probes candidate directories and raises when none is
+    # usable, so it must be inside the guard too: a host with a full or
+    # unwritable temp volume is exactly the host most in need of the rest of the
+    # doctor run, and must not get a traceback instead of it.
+    try:
+        temp_dir = Path(tempfile.gettempdir())
+    except OSError:
+        return
+    count, total = _scan_cli_installer_residue(temp_dir)
+    if count < _CLI_INSTALLER_RESIDUE_MIN:
+        return
+
+    # Capped scans undercount, so say so rather than printing a precise-looking
+    # number that is actually a floor. This applies to the SIZE as well: the scan
+    # stopped summing at the cap, so the total is a floor exactly as the count is,
+    # and rendering it as exact next to a "512+" count would contradict itself.
+    capped = count >= _CLI_INSTALLER_SCAN_CAP
+    count_label = f"{count}+" if capped else str(count)
+    if total >= 1073741824:
+        size_label = f"{total / 1073741824:.2f} GiB"
+    else:
+        size_label = f"{total / 1048576:.1f} MiB"
+    if capped:
+        size_label = f"≥ {size_label}"
+
+    print("\nkiro-cli installer residue")
+    print(f"  files:       ⚠️  {count_label} in {temp_dir}")
+    print(f"  reclaimable: {size_label}")
+    print("               Auto-update downloads that could not be applied while")
+    print("               kiro-cli was running, and are not cleaned up. Crew starts")
+    print("               a kiro-cli per session, so one accumulates per start.")
+    print(f"               Fix: delete {_CLI_INSTALLER_GLOB} from {temp_dir}, then stop")
+    print("               the gateway and run `kiro-cli update` deliberately.")
+    print("               To stop the downloads: `kiro-cli settings")
+    print("               app.disableAutoupdates true` — note this is per-user, so it")
+    print("               also pauses updates for your own interactive kiro-cli.")
+    issues.append("kiro-cli installer residue in temp")
+
+
 def _doctor_model_url_reachable(issues: list[str]) -> None:
     """Light HTTPS-reachability probe of the resolved embedding-model URL.
 
@@ -1474,7 +1565,7 @@ def _doctor(platform_boot_error: "Exception | None" = None, bundle: bool = False
             print("  auth:        ⚠️  Slack not configured — token generation unavailable")
             issues.append("dashboard auth: remote bind without Slack")
 
-    # ── Data Home (+ leftover migration archive) ──
+    # ── Data Home (+ leftover legacy home) ──
     _doctor_data_home()
     _doctor_path_launcher()
     _doctor_trust_root()
@@ -1492,6 +1583,9 @@ def _doctor(platform_boot_error: "Exception | None" = None, bundle: bool = False
 
     # ── Memory pressure preparedness (swap / userspace OOM killer) ──
     _doctor_memory_pressure(issues)
+
+    # ── kiro-cli installer residue (silent unless residue is on disk) ──
+    _doctor_cli_installer_residue(issues)
 
     # ── MCP Tools ──
     print("\nMCP Tools")

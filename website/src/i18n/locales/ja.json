@@ -802,7 +802,13 @@
       "other_search_hint": "ナレッジ、成果物、スキル、プロンプトを検索するには、App Store で Command Bar を無効にしてください — このランチャーはセッションのみに届きます",
       "cmd_toggle_theme": "テーマを切り替え",
       "search_failed": "検索に失敗しました",
-      "retry": "再試行"
+      "retry": "再試行",
+      "kind": {
+        "app": "アプリ",
+        "command": "コマンド",
+        "setting": "設定",
+        "view": "ビュー"
+      }
     },
     "crewCompanion": {
       "accessory": {
@@ -963,6 +969,7 @@
       },
       "header": {
         "browser_note": "これはブラウザー表示です。ここに表示される内容はすべてリアルタイムですが、コンパニオン自体は Kiro Crew デスクトップアプリに表示されます。",
+        "desktop_tip": "デスクトップ上のコンパニオンをクリックしてそのパネルを開きます。右クリックしてアバターを変更します。",
         "subtitle": "休憩のリズムを設定し、リマインダーを追加し、コンパニオンが何について告げるかを選択し、一緒に過ごした時間を振り返ります。",
         "title": "Crew Companion"
       },
@@ -1007,8 +1014,8 @@
       "offline": {
         "body": "開いて休憩の促しを変更してリマインダーを設定してください — それらはあなたのMac内のコンパニオンの内部に存在します。",
         "couldnt_open": "コンパニオンを開けませんでした — {{error}}",
+        "couldnt_turn_off": "コンパニオンをオフにできませんでした — {{error}}",
         "open": "Crew Companionを開く",
-        "quit_tip": "デスクトップ上のコンパニオンをクリックしてそのパネルを開きます。右クリックしてアバターを変更するか終了します。",
         "title": "Crew Companionが実行されていません"
       },
       "panel": {
@@ -3056,7 +3063,7 @@
         "cancel": "キャンセル",
         "confirm": "リセット",
         "desc": "完全リセット: 会話、アクティビティログ、スクリーンショット、すべての学習した環境設定をクリアします。{{name}}は完全に最初からやり直します。",
-        "title": "{{name}}をリセットしますか？"
+        "title": "「{{name}}」をリセットしますか？"
       },
       "settingsPanel": {
         "about": "Mochi について",
@@ -3781,7 +3788,7 @@
         "compile": "コンパイル",
         "compiling": "コンパイル中…",
         "cursor_position": "行 {{line}}、列 {{column}}",
-        "delete_file_confirm": "{{file}} を削除しますか？",
+        "delete_file_confirm": "「{{file}}」を削除しますか？",
         "download_pdf": "PDF をダウンロード",
         "editing": "{{file}} を編集中",
         "editing_unsaved": "{{file}} を編集中 — 未保存",
@@ -8160,6 +8167,7 @@
       "drop_here_to_remove_from_folder": "ここにドロップしてフォルダーから外す",
       "drop_to_reference_session": "ここにドロップしてこのセッションを参照",
       "duplicate": "複製",
+      "experimental": "実験的",
       "expand_folder_name": "フォルダー {{name}} を展開",
       "expand_group_results": "{{group}} の結果を展開",
       "failed_to_load_preview": "プレビューを読み込めませんでした。",
@@ -10796,6 +10804,7 @@
         "sound": "サウンド",
         "sources": "ソース",
         "test": "テスト",
+        "test_sound": "サウンドをテスト",
         "use_default": "デフォルトを使用",
         "volume": "ボリューム"
       },
@@ -10868,8 +10877,8 @@
         "disable_this_denied_command": "この拒否されたコマンドを無効化しますか？",
         "disabled_by_policy": "ポリシーで無効化",
         "disabled_for_this_surface": "ホスト表面では無効化",
-        "profile_unusable_title": "全面拒否フォールバックが有効です",
-        "profile_unusable_body": "下に示すプロファイルを読み込めなかったため、その表面はフェイルクローズの全面拒否の上限に保たれています。Kiro Crew のデータホームにある profiles フォルダー内のファイルを修正してください。修正すれば自動的に再読み込みされます。",
+        "profile_unusable_title": "フォールバックプロファイルが有効です",
+        "profile_unusable_body": "下に示すプロファイルを読み込めなかったため、その表面はポリシーのフォールバック上限に保たれています。より緩やかなフォールバックが宣言されていないかぎり、全面拒否です。Kiro Crew のデータホームにある profiles フォルダー内のファイルを修正してください。修正すれば自動的に再読み込みされます。",
         "profile_unusable_detail": "ファイルが読み取り不能、解析に失敗、または継承元のプロファイルが存在しません。再起動が必要なのは、ファイルが実行中のビルドより新しいビルド向けである場合のみです。",
         "profile_unusable_which": "対象のプロファイル: {{profiles}}。",
         "disabling_a_rule_that_overlaps_an_always_on_cont": "常時オンコントロール(機密ファイルの読み取り、IMDS、git-publish)と重複するルールを無効化しても、完全には解除されません。多層防御がブロック状態に保ちます。",

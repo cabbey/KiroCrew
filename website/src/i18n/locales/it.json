@@ -987,6 +987,7 @@
       },
       "header": {
         "browser_note": "Questa è la vista browser. Tutto qui è in tempo reale, ma il compagno stesso appare nell’app desktop di Kiro Crew.",
+        "desktop_tip": "Fai clic sul compagno sul desktop per aprire il suo pannello; fai clic con il tasto destro per cambiare avatar.",
         "subtitle": "Imposta il tuo ritmo delle pause, aggiungi promemoria, scegli di cosa il tuo compagno ti tiene aggiornato e ripensa al tempo passato insieme.",
         "title": "Crew Companion"
       },
@@ -1037,8 +1038,8 @@
       "offline": {
         "body": "Aprilo per cambiare i promemoria per le pause e impostare i promemoria — vivono all'interno del compagno sul tuo Mac.",
         "couldnt_open": "Impossibile aprire il compagno — {{error}}",
+        "couldnt_turn_off": "Impossibile disattivare il compagno — {{error}}",
         "open": "Apri Crew Companion",
-        "quit_tip": "Fai clic sul compagno sul desktop per aprire il suo pannello; fai clic con il tasto destro per cambiare avatar o uscire.",
         "title": "Crew Companion non è in esecuzione"
       },
       "panel": {
@@ -3122,7 +3123,7 @@
         "cancel": "Annulla",
         "confirm": "Reimposta",
         "desc": "Reimpostazione completa: cancella conversazione, registro attività, screenshot e tutte le preferenze apprese. {{name}} riparte completamente da zero.",
-        "title": "Reimpostare {{name}}?"
+        "title": "Reimpostare «{{name}}»?"
       },
       "settingsPanel": {
         "about": "Informazioni",
@@ -3869,7 +3870,7 @@
         "compile": "Compila",
         "compiling": "Compilazione…",
         "cursor_position": "Riga {{line}}, col. {{column}}",
-        "delete_file_confirm": "Eliminare {{file}}?",
+        "delete_file_confirm": "Eliminare «{{file}}»?",
         "download_pdf": "Scarica PDF",
         "editing": "Modifica di {{file}}",
         "editing_unsaved": "Modifica di {{file}} — non salvato",
@@ -4357,7 +4358,13 @@
       "other_search_hint": "Per cercare in conoscenza, artefatti, competenze o prompt, disattiva Command Bar nell App Store — questo launcher raggiunge solo le sessioni",
       "cmd_toggle_theme": "Cambia tema",
       "search_failed": "Ricerca non riuscita",
-      "retry": "Riprova"
+      "retry": "Riprova",
+      "kind": {
+        "app": "App",
+        "command": "Comando",
+        "setting": "Impostazione",
+        "view": "Vista"
+      }
     }
   },
   "autoImprovement": {
@@ -8373,6 +8380,7 @@
       "drop_here_to_remove_from_folder": "Rilascia qui per rimuovere dalla cartella",
       "drop_to_reference_session": "Rilascia qui per fare riferimento a questa sessione",
       "duplicate": "Duplica",
+      "experimental": "Sperimentale",
       "expand_folder_name": "Espandi la cartella {{name}}",
       "expand_group_results": "Espandi i risultati di {{group}}",
       "failed_to_load_preview": "Impossibile caricare l'anteprima.",
@@ -11043,6 +11051,7 @@
         "sound": "Suono",
         "sources": "Origini",
         "test": "Prova",
+        "test_sound": "Prova il suono",
         "use_default": "Usa il predefinito",
         "volume": "Volume",
         "preset_pulse": "Pulsazione"
@@ -11116,8 +11125,8 @@
         "disable_this_denied_command": "Disattivare questo comando vietato?",
         "disabled_by_policy": "Disattivato dalla policy",
         "disabled_for_this_surface": "Disattivato per la superficie host",
-        "profile_unusable_title": "Ripiego con rifiuto totale attivo",
-        "profile_unusable_body": "Un profilo indicato sotto non è stato caricato, quindi la sua superficie resta al limite di rifiuto totale con chiusura in caso di errore. Correggi il file nella cartella profiles della tua directory dati di Kiro Crew: verrà ricaricato automaticamente.",
+        "profile_unusable_title": "Profilo di ripiego attivo",
+        "profile_unusable_body": "Un profilo indicato sotto non è stato caricato, quindi la sua superficie resta al limite di ripiego della policy: rifiuto totale a meno che non sia dichiarato un ripiego meno restrittivo. Correggi il file nella cartella profiles della tua directory dati di Kiro Crew: verrà ricaricato automaticamente.",
         "profile_unusable_detail": "Il file era illeggibile, non è stato possibile analizzarlo oppure il profilo che estende è assente. Un riavvio serve solo se il file è già valido per una build più recente di quella in esecuzione.",
         "profile_unusable_which": "Profili interessati: {{profiles}}.",
         "disabling_a_rule_that_overlaps_an_always_on_cont": "Disattivare una regola che si sovrappone a un controllo sempre attivo (lettura di file sensibili, IMDS, git-publish) non la sblocca completamente — la difesa in profondità la mantiene bloccata.",

@@ -802,7 +802,13 @@
       "other_search_hint": "지식, 산출물, 스킬, 프롬프트를 검색하려면 App Store에서 Command Bar를 비활성화하세요 — 이 런처는 세션만 다룹니다",
       "cmd_toggle_theme": "테마 전환",
       "search_failed": "검색 실패",
-      "retry": "다시 시도"
+      "retry": "다시 시도",
+      "kind": {
+        "app": "앱",
+        "command": "명령",
+        "setting": "설정",
+        "view": "보기"
+      }
     },
     "crewCompanion": {
       "accessory": {
@@ -963,6 +969,7 @@
       },
       "header": {
         "browser_note": "브라우저 화면입니다. 여기 표시되는 내용은 모두 실시간이지만, 컴패니언 자체는 Kiro Crew 데스크톱 앱에 나타납니다.",
+        "desktop_tip": "데스크톱의 컴패니언을 클릭하면 패널이 열립니다. 오른쪽 버튼을 클릭하면 아바타를 바꿀 수 있습니다.",
         "subtitle": "휴식 리듬을 설정하고, 리마인더를 추가하고, 컴패니언이 무엇을 알려 줄지 고르고, 함께한 시간을 돌아보세요.",
         "title": "Crew Companion"
       },
@@ -1007,8 +1014,8 @@
       "offline": {
         "body": "열어서 휴식 알림을 바꾸고 리마인더를 설정하세요 — 이 설정은 Mac의 컴패니언 안에 있습니다.",
         "couldnt_open": "컴패니언을 열 수 없습니다 — {{error}}",
+        "couldnt_turn_off": "컴패니언을 끌 수 없습니다 — {{error}}",
         "open": "Crew Companion 열기",
-        "quit_tip": "데스크톱의 컴패니언을 클릭하면 패널이 열립니다. 오른쪽 버튼을 클릭하면 아바타를 바꾸거나 종료할 수 있습니다.",
         "title": "Crew Companion이 실행되고 있지 않습니다"
       },
       "panel": {
@@ -3056,7 +3063,7 @@
         "cancel": "취소",
         "confirm": "초기화",
         "desc": "전체 초기화: 대화, 활동 기록, 스크린샷, 학습한 설정을 모두 지웁니다. {{name}}은(는) 완전히 처음부터 다시 시작합니다.",
-        "title": "{{name}}을(를) 초기화하시겠습니까?"
+        "title": "‘{{name}}’을(를) 초기화하시겠습니까?"
       },
       "settingsPanel": {
         "about": "정보",
@@ -3781,7 +3788,7 @@
         "compile": "컴파일",
         "compiling": "컴파일 중…",
         "cursor_position": "{{line}}행, {{column}}열",
-        "delete_file_confirm": "{{file}}을(를) 삭제하시겠습니까?",
+        "delete_file_confirm": "‘{{file}}’을(를) 삭제하시겠습니까?",
         "download_pdf": "PDF 다운로드",
         "editing": "{{file}} 편집 중",
         "editing_unsaved": "{{file}} 편집 중 — 저장되지 않음",
@@ -8161,6 +8168,7 @@
       "drop_here_to_remove_from_folder": "여기에 놓아서 폴더에서 빼기",
       "drop_to_reference_session": "여기에 놓아 이 세션 참조",
       "duplicate": "복제",
+      "experimental": "실험적",
       "expand_folder_name": "{{name}} 폴더 펼치기",
       "expand_group_results": "{{group}} 결과 펼치기",
       "failed_to_load_preview": "미리보기를 불러오지 못했습니다.",
@@ -10807,6 +10815,7 @@
         "sound": "소리",
         "sources": "소스",
         "test": "테스트",
+        "test_sound": "소리 테스트",
         "use_default": "기본값 사용",
         "volume": "음량"
       },
@@ -10868,8 +10877,8 @@
         "disable_this_denied_command": "이 거부된 명령을 비활성화할까요?",
         "disabled_by_policy": "정책으로 비활성화됨",
         "disabled_for_this_surface": "호스트 표면에서 비활성화됨",
-        "profile_unusable_title": "전체 거부 폴백이 적용 중입니다",
-        "profile_unusable_body": "아래에 표시된 프로필을 로드할 수 없어 해당 표면이 실패 시 차단되는 전체 거부 상한에 묶입니다. Kiro Crew 데이터 홈의 profiles 폴더에서 파일을 수정하십시오. 수정하면 자동으로 다시 로드됩니다.",
+        "profile_unusable_title": "폴백 프로필이 적용 중입니다",
+        "profile_unusable_body": "아래에 표시된 프로필을 로드할 수 없어 해당 표면이 정책 폴백 상한에 묶입니다. 더 느슨한 폴백이 선언되지 않는 한 전체 거부입니다. Kiro Crew 데이터 홈의 profiles 폴더에서 파일을 수정하십시오. 수정하면 자동으로 다시 로드됩니다.",
         "profile_unusable_detail": "파일을 읽을 수 없거나, 구문 분석에 실패했거나, 확장 대상 프로필이 없습니다. 재시작은 파일이 실행 중인 빌드보다 최신 빌드용인 경우에만 필요합니다.",
         "profile_unusable_which": "영향을 받는 프로필: {{profiles}}.",
         "disabling_a_rule_that_overlaps_an_always_on_cont": "항상 켜져 있는 제어(민감 파일 읽기, IMDS, git-publish)와 겹치는 규칙을 비활성화해도 완전히 허용되지는 않습니다 — 다층 방어가 계속 차단합니다.",

@@ -111,23 +111,25 @@ function hasBlankedOverlay() {
 
 /**
  * Re-arm every overlay hidden on an error page by reloading it with the
- * (baseUrl, token) the host ALREADY resolved for the current target this
+ * (baseUrl, token, viaCookie) the host ALREADY resolved for the current target this
  * reconcile tick. The host owns target resolution AND switches, so this takes
  * concrete values rather than resolving again — no provider seam, no retry
  * budget, and no superseded-window race (the reload is synchronous inside the
- * tick). An empty token means no usable credential yet: stay blank and let the
- * next tick try. Recovering an expired cookie and a transient 5xx share this one
- * path.
+ * tick). A minted credential goes on the URL; a borrowed session uses the
+ * overlay's default BrowserWindow session. An absent credential means stay
+ * blank and let the next tick try. Recovering an expired cookie and a transient
+ * 5xx share this one path.
  */
-function rearmBlankedOverlays(baseUrl, token) {
-  if (!baseUrl || !token) return;
+function rearmBlankedOverlays(baseUrl, token, viaCookie = false) {
+  if (!baseUrl || (!token && !viaCookie)) return;
+  const pageToken = viaCookie ? "" : token;
   for (const [, win] of overlays) {
     if (win.isDestroyed() || !overlayBlanked.has(win)) continue;
     // Refresh the shared target so overlays built LATER for other displays load
     // the same fresh origin + token.
     currentBaseUrl = baseUrl;
-    currentToken = token;
-    win.loadURL(mochiPageUrl(currentBaseUrl, "pet.html", token));
+    currentToken = pageToken;
+    win.loadURL(mochiPageUrl(currentBaseUrl, "pet.html", pageToken));
   }
 }
 
@@ -657,6 +659,13 @@ function createOverlayForDisplay(display) {
     hasShadow: false,
     enableLargerThanScreen: true,
     show: false,
+    // Deliver the FIRST click to the page. This overlay is never focusable and is
+    // shown inactive, so on macOS every click is a first-mouse click and would
+    // otherwise be eaten activating a window that can never activate — leaving the
+    // pet hoverable but unclickable. Constructor-only: there is no
+    // `setAcceptFirstMouse()` on BrowserWindow, and the optional call that used to
+    // sit below hid that fact.
+    acceptFirstMouse: true,
     webPreferences: {
       preload: path.join(__dirname, "pet-preload.js"),
       contextIsolation: true,
@@ -668,7 +677,6 @@ function createOverlayForDisplay(display) {
   });
 
   win.setFocusable(false);
-  win.setAcceptFirstMouse?.(true);
   win.setIgnoreMouseEvents(true, { forward: true });
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   // INVISIBLE TO SCREEN CAPTURE (macOS NSWindowSharingNone, Windows

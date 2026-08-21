@@ -897,6 +897,7 @@
       },
       "header": {
         "browser_note": "This is the browser view. Everything here is live, but the companion itself appears in the Kiro Crew desktop app.",
+        "desktop_tip": "Click the companion on your desktop to open its panel; right-click to change its avatar.",
         "subtitle": "Set your break rhythm, add reminders, choose what your companion tells you about, and look back on your time together.",
         "title": "Crew Companion"
       },
@@ -934,8 +935,8 @@
       "offline": {
         "body": "Open it to change break nudges and set reminders — those live inside the companion on your Mac.",
         "couldnt_open": "Couldn’t open the companion — {{error}}",
+        "couldnt_turn_off": "Couldn’t turn the companion off — {{error}}",
         "open": "Open Crew Companion",
-        "quit_tip": "Click the companion on your desktop to open its panel; right-click to change its avatar or quit.",
         "title": "Crew Companion isn’t running"
       },
       "panel": {
@@ -1153,7 +1154,13 @@
       "other_search_hint": "To search knowledge, artifacts, skills or prompts, disable Command Bar in the App Store — this launcher reaches sessions only",
       "cmd_toggle_theme": "Toggle Theme",
       "search_failed": "Search failed",
-      "retry": "Retry"
+      "retry": "Retry",
+      "kind": {
+        "app": "App",
+        "command": "Command",
+        "setting": "Setting",
+        "view": "View"
+      }
     }
   },
   "components": {
@@ -4162,7 +4169,8 @@
         "preset_pop": "Pop",
         "preset_pulse": "Pulse",
         "priority_for": "Priority for {{name}}",
-        "use_default": "Use default"
+        "use_default": "Use default",
+        "test_sound": "Test sound"
       },
       "securityPanel": {
         "all_allowed": "All allowed",
@@ -4178,8 +4186,8 @@
         "floor": "Floor: {{n}}",
         "other_surfaces_have_their_own_profiles": "A surface with its own profile can allow what the host cannot: {{surfaces}}.",
         "disabled_for_this_surface": "Disabled for the host surface",
-        "profile_unusable_title": "Deny-all fallback in effect",
-        "profile_unusable_body": "A profile named below could not be loaded, so its surface is held at the fail-closed deny-all ceiling. Correct the file in the profiles folder of your Kiro Crew data home — it is reloaded automatically.",
+        "profile_unusable_title": "Fallback profile in effect",
+        "profile_unusable_body": "A profile named below could not be loaded, so its surface is held at the policy fallback ceiling — deny-all unless a looser fallback is declared. Correct the file in the profiles folder of your Kiro Crew data home — it is reloaded automatically.",
         "profile_unusable_detail": "The file was unreadable, failed to parse, or extends a profile that is missing. A restart is only needed if the file is already valid for a newer build than the one running.",
         "profile_unusable_which": "Affected: {{profiles}}.",
         "disabling_all_built_in_denies_removes_kirocrew_s": "Disabling all built-in denies removes Kiro Crew’s protection against destructive and credential-exfiltration commands. Some commands may stay blocked by independent defense-in-depth controls (sensitive paths, IMDS, git-publish).",

@@ -852,7 +852,13 @@
       "other_search_hint": "Pour rechercher dans les connaissances, artefacts, competences ou prompts, desactivez Command Bar dans l App Store — ce lanceur n atteint que les sessions",
       "cmd_toggle_theme": "Changer de theme",
       "search_failed": "Recherche echouee",
-      "retry": "Reessayer"
+      "retry": "Reessayer",
+      "kind": {
+        "app": "Application",
+        "command": "Commande",
+        "setting": "Paramètre",
+        "view": "Vue"
+      }
     },
     "crewCompanion": {
       "accessory": {
@@ -1013,6 +1019,7 @@
       },
       "header": {
         "browser_note": "Ceci est la vue navigateur. Tout ici est en direct, mais le compagnon lui-même apparaît dans l’application de bureau Kiro Crew.",
+        "desktop_tip": "Clique sur le compagnon sur ton bureau pour ouvrir son panneau ; clique droit pour changer son avatar.",
         "subtitle": "Définis ton rythme de pauses, ajoute des rappels, choisis ce dont ton compagnon te parle, et repense au temps passé ensemble.",
         "title": "Crew Companion"
       },
@@ -1063,8 +1070,8 @@
       "offline": {
         "body": "Ouvre-le pour modifier les rappels de pause et définir des rappels — ils vivent dans le compagnon sur ton Mac.",
         "couldnt_open": "Impossible d’ouvrir le compagnon — {{error}}",
+        "couldnt_turn_off": "Impossible de désactiver le compagnon — {{error}}",
         "open": "Ouvrir Crew Companion",
-        "quit_tip": "Clique sur le compagnon sur ton bureau pour ouvrir son panneau ; clique droit pour changer son avatar ou le quitter.",
         "title": "Crew Companion n’est pas lancé"
       },
       "panel": {
@@ -3148,7 +3155,7 @@
         "cancel": "Annuler",
         "confirm": "Réinitialiser",
         "desc": "Réinitialisation complète : efface la conversation, le journal d'activité, les captures d'écran et toutes les préférences apprises. {{name}} repart complètement à zéro.",
-        "title": "Réinitialiser {{name}} ?"
+        "title": "Réinitialiser « {{name}} » ?"
       },
       "settingsPanel": {
         "about": "À propos",
@@ -3895,7 +3902,7 @@
         "compile": "Compiler",
         "compiling": "Compilation…",
         "cursor_position": "Ligne {{line}}, col. {{column}}",
-        "delete_file_confirm": "Supprimer {{file}} ?",
+        "delete_file_confirm": "Supprimer « {{file}} » ?",
         "download_pdf": "Télécharger le PDF",
         "editing": "Modification de {{file}}",
         "editing_unsaved": "Modification de {{file}} — non enregistré",
@@ -8373,6 +8380,7 @@
       "drop_here_to_remove_from_folder": "Déposez ici pour retirer du dossier",
       "drop_to_reference_session": "Déposez ici pour référencer cette session",
       "duplicate": "Dupliquer",
+      "experimental": "Expérimental",
       "expand_folder_name": "Développer le dossier {{name}}",
       "expand_group_results": "Développer les résultats de {{group}}",
       "failed_to_load_preview": "Échec du chargement de l'aperçu.",
@@ -11044,6 +11052,7 @@
         "sound": "Son",
         "sources": "Sources",
         "test": "Tester",
+        "test_sound": "Tester le son",
         "use_default": "Utiliser la valeur par défaut",
         "volume": "Volume",
         "preset_pulse": "Pulsion"
@@ -11117,8 +11126,8 @@
         "disable_this_denied_command": "Désactiver cette commande refusée ?",
         "disabled_by_policy": "Désactivé par la politique",
         "disabled_for_this_surface": "Désactivé pour la surface hôte",
-        "profile_unusable_title": "Repli tout-refuser actif",
-        "profile_unusable_body": "Un profil nommé ci-dessous n’a pas pu être chargé : sa surface reste donc au plafond de refus total à sécurité intégrée. Corrigez le fichier dans le dossier profiles de votre répertoire de données Kiro Crew — il est rechargé automatiquement.",
+        "profile_unusable_title": "Profil de repli actif",
+        "profile_unusable_body": "Un profil nommé ci-dessous n’a pas pu être chargé : sa surface reste donc au plafond de repli de la politique — tout refuser, sauf si un repli plus souple est déclaré. Corrigez le fichier dans le dossier profiles de votre répertoire de données Kiro Crew — il est rechargé automatiquement.",
         "profile_unusable_detail": "Le fichier était illisible, son analyse a échoué, ou le profil qu’il étend est absent. Un redémarrage n’est nécessaire que si le fichier est déjà valide pour un build plus récent que celui en cours.",
         "profile_unusable_which": "Profils concernés : {{profiles}}.",
         "disabling_a_rule_that_overlaps_an_always_on_cont": "Désactiver une règle qui recoupe un contrôle toujours actif (lecture de fichiers sensibles, IMDS, publication git) ne la débloque pas entièrement — la défense en profondeur la maintient bloquée.",
